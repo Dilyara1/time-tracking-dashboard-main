@@ -3,78 +3,149 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0"> <!-- displays site properly based on user's device -->
-
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Rubik:ital,wght@0,300..900;1,300..900&display=swap" rel="stylesheet">
   <link rel="icon" type="image/png" sizes="32x32" href="./images/favicon-32x32.png">
-  
+  <link rel="stylesheet" href="./styles.css" >
   <title>Frontend Mentor | Time tracking dashboard</title>
-
-  <!-- Feel free to remove these styles or customise in your own stylesheet 👍 -->
-  <style>
-    .attribution { font-size: 11px; text-align: center; }
-    .attribution a { color: hsl(228, 45%, 44%); }
-  </style>
 </head>
 <body>
+  <main>
+    <section class="dashboard">
+      <div class="profile-card">
+        <figure class="profile-card__details">
+          <div class="profile-card__image" >
+            <img alt="profile" src="./images/image-jeremy.png" />
+          </div>
+          <figcaption class="profile-card__text">
+            <p class="profile-card__label">Report for</p>
+            <h2 class="profile-card__name">Jeremy Robson </h2>
+          </figcaption>
+        </figure>
+        <nav aria-label="TimeFrame selection"> 
+          <ul class="timeframe-menu">
+            <li class="timeframe-menu__item timeframe-menu__item--active" aria-current="page">Daily</li>
+            <li class="timeframe-menu__item">Weekly</li>
+            <li class="timeframe-menu__item">Monthly</li>
+          </ul>
+        </nav>
+      </div>
+    </section>
+  </main>
+  <footer class="attribution">
+    Challenge by <a href="https://www.frontendmentor.io?ref=challenge" target="_blank" rel="noopener noreferrer">Frontend Mentor</a>. 
+    Coded by <a href="#">Dilyara</a>.
+  </footer>
 
-  Report for
-  Jeremy Robson
+  <script>
+    let reports = [
+      {
+        title: "Work",
+        bgColor: "hsl(15, 100%, 70%)",
+        image: "icon-work.svg"
+      },
+      {
+        title: "Play",
+        bgColor: "hsl(195, 74%, 62%)",
+        image: "icon-play.svg"
+      },
+      {
+        title: "Study",
+        bgColor: "hsl(348, 100%, 68%)",
+        image: "icon-study.svg"
+      },
+      {
+        title: "Exercise",
+        bgColor: "hsl(145, 58%, 55%)",
+        image: "icon-exercise.svg"
+      },
+      {
+        title: "Social",
+        bgColor: "hsl(264, 64%, 52%)",
+        image: "icon-social.svg"
+      },
+      {
+        title: "Self Care",
+        bgColor: "hsl(43, 84%, 65%)",
+        image: "icon-self-care.svg"
+      }       
+    ]
 
-  Daily
-  Weekly
-  Monthly
+    const timeFrames = ["daily", "weekly", "monthly"]
+    let currentTimeFrame = timeFrames[0]
+    fetchData()
+    
+    function fetchData() {
+      fetch('./data.json').then(response => response.json()).then(data => {
+        reports = data.reduce((acc, curr) => {
+        const item = reports.find((report) => report.title === curr.title)
+        acc.push({...curr, ...item})
+        return acc
+      }, [])
+        handleResponse()
+    })
+    }
 
-  Work
-  5hrs <!-- daily -->
-  Previous - 7hrs <!-- daily -->
-  32hrs <!-- weekly -->
-  Previous - 36hrs <!-- weekly -->
-  103hrs <!-- monthly -->
-  Previous - 128hrs <!-- monthly -->
+    function handleResponse() {
+      const reportsElement = document.querySelector('.dashboard')
+      Array.from(reportsElement.children).forEach((el) => {
+        if (el.className !== 'profile-card') {
+          reportsElement.removeChild(el)
+        }
+      })
+      reports.forEach((report) => {
+        const reportCard = document.createElement('div')
+        reportCard.className = 'report-card'
+        reportCard.style.backgroundImage = `url(../images/${report.image}), linear-gradient(${report.bgColor} 0%, ${report.bgColor} 50%, transparent 50%, transparent 100%)`
+        const reportCardContent = document.createElement('div')
+        reportCardContent.className = 'report-card__content'
+        reportCard.appendChild(reportCardContent)
 
-  Play
-  1hr <!-- daily -->
-  Previous - 2hrs <!-- daily -->
-  10hrs <!-- weekly -->
-  Previous - 8hrs <!-- weekly -->
-  23hrs <!-- monthly -->
-  Previous - 29hrs <!-- monthly -->
+        const reportCardHeader = document.createElement('div')
+        reportCardHeader.className = 'report-card__header'
 
-  Study
-  0hrs <!-- daily -->
-  Previous - 1hr <!-- daily -->
-  4hrs <!-- weekly -->
-  Previous - 7hrs <!-- weekly -->
-  13hrs <!-- monthly -->
-  Previous - 19hrs <!-- monthly -->
+        const title = document.createElement("h3");
+        title.className = "report-card__title";
+        title.textContent = report.title;
 
-  Exercise
-  1hr <!-- daily -->
-  Previous - 1hr <!-- daily -->
-  4hrs <!-- weekly -->
-  Previous - 5hrs <!-- weekly -->
-  11hrs <!-- monthly -->
-  Previous - 18hrs <!-- monthly -->
+        const button = document.createElement("button");
+        button.className = "report-card__menu-button";
+        button.setAttribute("aria-label", "More options");
+        reportCardHeader.appendChild(title)
+        reportCardHeader.appendChild(button)
+        reportCardContent.appendChild(reportCardHeader)
 
-  Social
-  1hr <!-- daily -->
-  Previous - 3hrs <!-- daily -->
-  5hrs <!-- weekly -->
-  Previous - 10hrs <!-- weekly -->
-  21hrs <!-- monthly -->
-  Previous - 23hrs <!-- monthly -->
+        const reportCardBody = document.createElement('div')
+        reportCardBody.className = 'report-card__body'
+        const hours = document.createElement('p')
+        hours.className = "report-card__hours"
+        hours.textContent = report.timeframes[currentTimeFrame].current + 'hrs'
 
-  Self Care
-  0hrs <!-- daily -->
-  Previous - 1hr <!-- daily -->
-  2hrs <!-- weekly -->
-  Previous - 2hrs <!-- weekly -->
-  7hrs <!-- monthly -->
-  Previous - 11hrs <!-- monthly -->
+        const previous = document.createElement('p')
+        previous.className = "report-card__previous"
+        previous.textContent = 'Last Week - ' + report.timeframes[currentTimeFrame].previous + 'hrs'
 
-  
-  <div class="attribution">
-    Challenge by <a href="https://www.frontendmentor.io?ref=challenge" target="_blank">Frontend Mentor</a>. 
-    Coded by <a href="#">Your Name Here</a>.
-  </div>
+        reportCardBody.appendChild(hours)
+        reportCardBody.appendChild(previous)
+        reportCardContent.appendChild(reportCardBody)
+        reportsElement.appendChild(reportCard)
+      })
+    }
+
+    const tabMenu = document.querySelector('.timeframe-menu')
+    tabMenu.addEventListener('click', (event) => {
+      if (event.target.className === 'timeframe-menu__item') {
+        currentTimeFrame = String(event.target.textContent).toLowerCase()
+        Array.from(tabMenu.children).forEach((tab) => {
+          tab.classList.remove('timeframe-menu__item--active')
+          tab.removeAttribute("aria-current");
+        })
+        event.target.classList.add('timeframe-menu__item--active')
+        event.target.setAttribute("aria-current", "page");
+        handleResponse()
+      } 
+    })
+  </script>
 </body>
 </html>

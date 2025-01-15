@@ -97,7 +97,7 @@
       reports.forEach((report) => {
         const reportCard = document.createElement('div')
         reportCard.className = 'report-card'
-        reportCard.style.backgroundImage = `url(../images/${report.image}), linear-gradient(${report.bgColor} 0%, ${report.bgColor} 50%, transparent 50%, transparent 100%)`
+        reportCard.style.backgroundImage = `url(./images/${report.image}), linear-gradient(${report.bgColor} 0%, ${report.bgColor} 50%, transparent 50%, transparent 100%)`
         const reportCardContent = document.createElement('div')
         reportCardContent.className = 'report-card__content'
         reportCard.appendChild(reportCardContent)
